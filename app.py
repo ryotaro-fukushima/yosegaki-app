@@ -31,13 +31,14 @@ def handle_yosegaki_command(ack, body, say):
 # メッセージイベントで寄せ書きを記録
 @app.event("message")
 def handle_message_events(body, event, logger):
-    thread_ts = event.get("thread_ts")
-    if not thread_ts:
-        return
+    # 1. thread_ts を取得（なければ自分の ts を使う）
+    thread_ts = event.get("thread_ts") or event.get("ts")
 
+    # 2. 対象スレッドに登録されていれば追加
     if thread_ts in yosegaki_store and "text" in event:
         yosegaki_store[thread_ts].append(event["text"])
-        logger.info(f"寄せ書き追加: {event['text']}")
+        print(f"📩 寄せ書き追加: {event['text']}")
+
 
 # `/finish_yosegaki` コマンド：寄せ書きをまとめて表示
 @app.command("/finish_yosegaki")

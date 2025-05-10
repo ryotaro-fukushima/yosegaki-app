@@ -1,12 +1,16 @@
+from pathlib import Path
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from dotenv import load_dotenv
 import os
 
 # .envファイルを読み込み
-load_dotenv()
+env_path = Path(__file__).parent / ".env"
+load_dotenv(dotenv_path=env_path)
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
+print("SLACK_BOT_TOKEN:", SLACK_BOT_TOKEN)
+print("SLACK_APP_TOKEN:", SLACK_APP_TOKEN)
 
 # アプリ初期化
 app = App(token=SLACK_BOT_TOKEN)
@@ -59,3 +63,8 @@ def handle_finish_command(ack, body, say):
 if __name__ == "__main__":
     handler = SocketModeHandler(app, SLACK_APP_TOKEN)
     handler.start()
+
+# @app.event("*")
+# def handle_all_events(body, event=None, logger=None):
+#     print("📦 何かイベントを受信しました")
+#     print("body:", body)
